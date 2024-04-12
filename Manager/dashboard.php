@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DMeal - Add Food Package</title>
+    <title>DMeal - Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-green-100 font-sans">
-    
+
+    <!-- Sidebar -->
     <div style="background-color: #4c9173;" class="text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
         <div class="px-11 py-1 w-45 h-45">
             <img src="D Meal (Logo) (2).png" alt="Image" class="w-full h-full object-contain" />
@@ -33,28 +34,97 @@
             </li>
         </ul>
     </div>
-    <div class="ml-64 p-8">
-        <h1 class="text-3xl font-bold mb-8">Edit Menu</h1>
-        <div style="background-color: #4c9173"; class="p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold mb-4">Dinner Menu</h2>
-            <div id="dinnerOrderInfo">
-                <p>Total Orders Today: <span id="totalDinnerOrders">0</span></p>
-                <ul id="dinnerOrderList" class="list-disc ml-8">
-                    <!-- List of students who ordered dinner will be displayed here -->
-                </ul>
-            </div>
-            <form id="dinnerMenuForm">
-                <input type="text" id="dinnerItem" name="dinnerItem" class="border border-gray-300 p-2 w-full rounded mb-2" placeholder="Add dinner item">
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Add</button>
+
+<!-- Main Content -->
+<div class="ml-64 p-8">
+
+    <h1 class="text-3xl font-bold mb-8">Manager Dashboard</h1>
+
+    <!-- Update Dinner and Lunch Items -->
+    <div class="grid grid-cols-2 gap-8 mb-8">
+
+        <!-- Update Dinner Items Form -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Update Dinner Items</h2>
+            <form action="update_items.php" method="post">
+                <div class="mb-4">
+                    <label for="dinnerMenuId" class="block text-lg font-semibold mb-2">Dinner Menu ID:</label>
+                    <select id="dinnerMenuId" name="dinnerMenuId" class="border border-gray-300 p-2 w-full rounded">
+                        <?php
+                        include 'db.php';
+
+                        $sql = "SELECT Menu_id FROM Menu";
+                        $result = $conn->query($sql);
+
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<option value='" . $row["Menu_id"] . "'>" . $row["Menu_id"] . "</option>";
+                            }
+                        } else {
+                            echo "<option value=''>No Menu IDs available</option>";
+                        }
+
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+                <!-- Add more form fields for updating dinner items -->
+                <button type="submit" name="updateDinner" class="bg-blue-500 text-white px-4 py-2 rounded">Update Dinner</button>
             </form>
-            <!-- Add other menu items and forms here -->
+        </div>
+
+        <!-- Update Lunch Items Form -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Update Lunch Items</h2>
+            <form action="update_items.php" method="post">
+                <div class="mb-4">
+                    <label for="lunchMenuId" class="block text-lg font-semibold mb-2">Lunch Menu ID:</label>
+                    <select id="lunchMenuId" name="lunchMenuId" class="border border-gray-300 p-2 w-full rounded">
+                        <?php
+                        include 'db.php';
+
+                        $sql = "SELECT Menu_id FROM Menu";
+                        $result = $conn->query($sql);
+
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<option value='" . $row["Menu_id"] . "'>" . $row["Menu_id"] . "</option>";
+                            }
+                        } else {
+                            echo "<option value=''>No Menu IDs available</option>";
+                        }
+
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+                <!-- Add more form fields for updating lunch items -->
+                <button type="submit" name="updateLunch" class="bg-blue-500 text-white px-4 py-2 rounded">Update Lunch</button>
+            </form>
         </div>
     </div>
+        <div class="grid grid-cols-1 gap-8 mb-8">
+        <!-- Today's Order Status -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Today's Order Status</h2>
+            <!-- Placeholder for today's order status -->
+            <p class="text-lg">Total Orders Today: <span class="font-semibold">50</span></p>
+            <p class="text-lg mt-4">Lunch Orders: <span class="font-semibold">30</span></p>
+            <p class="text-lg mt-4">Dinner Orders: <span class="font-semibold">20</span></p>
+        </div>
 
-    <footer style = "background-color : #42476d"; class=" text-white py-4 fixed bottom-0 w-full">
+    </div>
+
+</div>
+
+
+
+    <footer style="background-color: #42476d;" class="text-white py-4 fixed bottom-0 w-full">
         <div class="container mx-auto text-center">
             <p>&copy; 2024 Dining Meal Management System</p>
         </div>
     </footer>
+
 </body>
+
 </html>

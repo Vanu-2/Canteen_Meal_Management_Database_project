@@ -68,16 +68,16 @@
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td style = 'background-color : #e2eff1;' class='px-5 py-5 border-b border-gray-100  text-sm'>";
+                            echo "<td style = 'background-color : #e2eff1;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
                             echo $row["Menu_id"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #dbef98;' class='px-5 py-5 border-b border-gray-100  text-sm'>";
+                            echo "<td style = 'background-color : #dbef98;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
                             echo $row["FoodItems"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #e5f1e3;' class='px-5 py-5 border-b border-gray-100  text-sm'>";
+                            echo "<td style = 'background-color : #e5f1e3;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
                             echo "৳ " . $row["Price"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #dbef98;' class='px-5 py-5 border-b border-gray-100  text-sm'>";
+                            echo "<td style = 'background-color : #dbef98;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
                             echo "<form action='edit_item.php' method='post'>";
                             echo "<input type='hidden' name='menu_id' value='" . $row["Menu_id"] . "'>";
                             echo "<button type='submit' name='edit' class='bg-blue-500 text-white px-4 py-2 rounded'>Edit</button>";
