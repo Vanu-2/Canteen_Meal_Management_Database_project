@@ -47,13 +47,13 @@
                     <div id="foodItems">
                         <input type="text" name="foodItems[]" class="border border-gray-300 p-2 w-full rounded mb-2" placeholder="Enter food item" required>
                     </div>
-                    <button type="button" id="addFoodItem" style="background-color: #6bba62;" class=" text-white px-4 py-2 rounded">Add More</button>
+                    <button type="button" id="addFoodItem" style="background-color: #639cd9;" class=" text-white px-4 py-2 rounded">Add More</button>
                 </div>
                 <div class="mb-4">
                     <label for="price" class="block text-white">Price:</label>
                     <input type="number" id="price" name="price" class="border border-gray-300 p-2 w-full rounded" placeholder="Enter price" required>
                 </div>
-                <button type="submit"   style="background-color: #6bba62;" name="submit" class=" text-white px-4 py-2 rounded">Add Package</button>
+                <button type="submit"   style="background-color: #639cd9;" name="submit" class=" text-white px-4 py-2 rounded">Add Package</button>
             </form>
         </div>
     </div>

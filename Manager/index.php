@@ -23,10 +23,10 @@
                 <a href="reports.php" class="block">Reports</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="edit_menu.php" class="block">Edit Menu</a>
+                <a href="edit_package.php" class="block">Edit Package</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="add_package.php" class="block">Edit Package</a>
+                <a href="add_package.php" class="block">Add Package</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
                 <a href="delete.php" class="block">Delete Package</a>

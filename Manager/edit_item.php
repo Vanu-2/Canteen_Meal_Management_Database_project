@@ -58,7 +58,7 @@ if (isset($_POST['update'])) {
 $conn->close();
 ?>
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -67,8 +67,10 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DMeal - Edit Food Item</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-
+</head> -->
+<?php 
+    include'index.php';
+    ?>
 <body class="bg-green-100 font-sans">
 
     <div class="ml-64 p-8">
