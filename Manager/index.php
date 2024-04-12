@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <footer class="bg-yellow-500 text-white py-4 fixed bottom-0 w-full">
+    <footer class="bg-white-500 text-white py-4 fixed bottom-0 w-full">
         <div class="container mx-auto text-center">
             <p>&copy; 2024 Canteen Management System</p>
         </div>
