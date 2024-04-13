@@ -1,3 +1,21 @@
+<?php
+session_start();
+include 'db.php';
+
+// Check if user is logged in, if not redirect to login page
+if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
+    header('Location: ../login_form.php');
+    exit;
+}
+
+// Logout logic
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header('Location: ../login_form.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +28,6 @@
 </head>
 
 <body class="bg-green-100 font-sans">
-
     <!-- Sidebar -->
     <div style="background-color: #4c9173;" class="text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
         <div class="px-11 py-1 w-45 h-45">
@@ -38,8 +55,15 @@
     <!-- Main Content -->
     <div class="ml-64 p-8">
 
-        <h1 class="text-3xl font-bold mb-8">Manager Dashboard</h1>
-
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Manager Dashboard</h1>
+            <div class="flex items-center space-x-4">
+                <span class =  "font-semibold text-black"> Welcome, Manager - <?php echo $_SESSION['username']; ?></span>
+                <form action="dashboard.php" method="post">
+                    <button type="submit" name="logout" class="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+                </form>
+            </div>
+        </div>
         <!-- Update Dinner and Lunch Items -->
         <div class="grid grid-cols-2 gap-8 mb-8">
 

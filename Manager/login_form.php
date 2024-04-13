@@ -14,7 +14,7 @@ if (isset($_POST['login'])) {
         $_SESSION['loggedIn'] = true;
         $_SESSION['username'] = $username;
         $_SESSION['userType'] = $userType;
-        header('Location: Manager/dashboard.php');
+        header('Location: dashboard.php');
     } else {
         echo "<script>alert('Invalid credentials');</script>";
     }
