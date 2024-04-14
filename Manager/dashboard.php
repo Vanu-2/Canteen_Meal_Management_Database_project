@@ -131,12 +131,39 @@ if (isset($_POST['logout'])) {
     <div class="grid grid-cols-2 gap-8 mb-8">
         <!-- Today's Order Status -->
         <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold mb-4">Today's Order Status</h2>
-            <!-- Placeholder for today's order status -->
-            <p class="text-lg">Total Orders Today: <span class="font-semibold">50</span></p>
-            <p class="text-lg mt-4">Lunch Orders: <span class="font-semibold">30</span></p>
-            <p class="text-lg mt-4">Dinner Orders: <span class="font-semibold">20</span></p>
-        </div>
+        <h2 class="text-2xl font-bold mb-4">Today's Order Status</h2>
+        
+        <?php
+        include 'db.php';
+
+        // Get today's date
+        $today = date('Y-m-d');
+
+        // Query to get total orders for today
+        $sql_total = "SELECT COUNT(*) as total FROM `Order` WHERE Date = '$today'";
+        $result_total = $conn->query($sql_total);
+        $row_total = $result_total->fetch_assoc();
+        $totalOrders = $row_total['total'];
+
+        // Query to get lunch orders for today
+        $sql_lunch = "SELECT COUNT(*) as lunch FROM `Order` WHERE Date = '$today' AND Type = 3";
+        $result_lunch = $conn->query($sql_lunch);
+        $row_lunch = $result_lunch->fetch_assoc();
+        $lunchOrders = $row_lunch['lunch'];
+
+        // Query to get dinner orders for today
+        $sql_dinner = "SELECT COUNT(*) as dinner FROM `Order` WHERE Date = '$today' AND Type = 2";
+        $result_dinner = $conn->query($sql_dinner);
+        $row_dinner = $result_dinner->fetch_assoc();
+        $dinnerOrders = $row_dinner['dinner'];
+
+        $conn->close();
+        ?>
+
+        <p class="text-lg">Total Orders Today: <span class="font-semibold"><?php echo $totalOrders; ?></span></p>
+        <p class="text-lg mt-4">Lunch Orders: <span class="font-semibold"><?php echo $lunchOrders; ?></span></p>
+        <p class="text-lg mt-4">Dinner Orders: <span class="font-semibold"><?php echo $dinnerOrders; ?></span></p>
+    </div>
 
 <!-- Today's Ongoing Meal -->
 <div class="bg-white p-6 rounded-lg shadow-md">

@@ -9,13 +9,19 @@ if(isset($_POST['register'])){
     $password = $_POST['password'];
 
 
-    $sql = "INSERT INTO student (Student_Id, Student_name, Email, Password, Mobile_No) VALUES ('$id', '$name', '$email', '$password', '$mobile')";
+    try
+    {
+        $sql = "INSERT INTO student (Student_Id, Student_name, Email, Password, Mobile_No) VALUES ('$id', '$name', '$email', '$password', '$mobile')";
+    }
+    catch(Exception $e) {
+        echo "<h1 align = center> Something Went Wrong <br> </h1>";
+    }
 
     if ($conn->query($sql) === TRUE) {
         echo "Registration successful <br>"; 
         echo "<h1 align = center > Hello  $name <br> </h1>";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "<h1 align = center > Something Went Wrong <br> </h1>";
     }
 }
 ?>
