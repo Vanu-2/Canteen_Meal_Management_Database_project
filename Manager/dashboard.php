@@ -77,12 +77,12 @@ if (isset($_POST['logout'])) {
                             <?php
                             include 'db.php';
 
-                            $sql = "SELECT Menu_id FROM Menu";
+                            $sql = "SELECT Menu_id, Price FROM Menu";
                             $result = $conn->query($sql);
 
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='" . $row["Menu_id"] . "'>" . $row["Menu_id"] . "</option>";
+                                    echo "<option value='" . $row["Menu_id"] . "' data-price='" . $row["Price"] . "'>" . $row["Menu_id"] . "</option>";
                                 }
                             } else {
                                 echo "<option value=''>No Menu IDs available</option>";
@@ -92,6 +92,11 @@ if (isset($_POST['logout'])) {
                             ?>
                         </select>
                     </div>
+                    <div class="mb-4">
+                        <label for="dinnerPrice" class="block text-lg font-semibold mb-2">Price:</label>
+                        <input type="number" id="dinnerMenuPrice" placeholder = "Selected Default Price. " name="dinnerMenuPrice" class="border border-gray-300 p-2 w-full rounded">
+                    </div>
+
                 </div>
 
                 <!-- Update Lunch Items Form -->
@@ -103,12 +108,12 @@ if (isset($_POST['logout'])) {
                             <?php
                             include 'db.php';
 
-                            $sql = "SELECT Menu_id FROM Menu";
+                            $sql = "SELECT Menu_id, Price FROM Menu";
                             $result = $conn->query($sql);
 
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='" . $row["Menu_id"] . "'>" . $row["Menu_id"] . "</option>";
+                                    echo "<option value='" . $row["Menu_id"] . "' data-price='" . $row["Price"] . "'>" . $row["Menu_id"] . "</option>";
                                 }
                             } else {
                                 echo "<option value=''>No Menu IDs available</option>";
@@ -118,6 +123,11 @@ if (isset($_POST['logout'])) {
                             ?>
                         </select>
                     </div>
+                    <div class="mb-4">
+                        <label for="dinnerPrice" class="block text-lg font-semibold mb-2">Price:</label>
+                        <input type="number" id="lunchMenuPrice" placeholder = "Selected Default Price. " name="lunchMenuPrice" class="border border-gray-300 p-2 w-full rounded">
+                    </div>
+
                 </div>
 
                 <!-- Single Update Button -->
@@ -128,42 +138,42 @@ if (isset($_POST['logout'])) {
         </div>
 
         <!-- Today's Order Status and Ongoing Meals -->
-    <div class="grid grid-cols-2 gap-8 mb-8">
-        <!-- Today's Order Status -->
-        <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-4">Today's Order Status</h2>
-        
-        <?php
-        include 'db.php';
+        <div class="grid grid-cols-2 gap-8 mb-8">
+            <!-- Today's Order Status -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Today's Order Status</h2>
+            
+            <?php
+            include 'db.php';
 
-        // Get today's date
-        $today = date('Y-m-d');
+            // Get today's date
+            $today = date('Y-m-d');
 
-        // Query to get total orders for today
-        $sql_total = "SELECT COUNT(*) as total FROM `Order` WHERE Date = '$today'";
-        $result_total = $conn->query($sql_total);
-        $row_total = $result_total->fetch_assoc();
-        $totalOrders = $row_total['total'];
+            // Query to get total orders for today
+            $sql_total = "SELECT COUNT(*) as total FROM `Order` WHERE Date = '$today'";
+            $result_total = $conn->query($sql_total);
+            $row_total = $result_total->fetch_assoc();
+            $totalOrders = $row_total['total'];
 
-        // Query to get lunch orders for today
-        $sql_lunch = "SELECT COUNT(*) as lunch FROM `Order` WHERE Date = '$today' AND Type = 3";
-        $result_lunch = $conn->query($sql_lunch);
-        $row_lunch = $result_lunch->fetch_assoc();
-        $lunchOrders = $row_lunch['lunch'];
+            // Query to get lunch orders for today
+            $sql_lunch = "SELECT COUNT(*) as lunch FROM `Order` WHERE Date = '$today' AND Type = 3";
+            $result_lunch = $conn->query($sql_lunch);
+            $row_lunch = $result_lunch->fetch_assoc();
+            $lunchOrders = $row_lunch['lunch'];
 
-        // Query to get dinner orders for today
-        $sql_dinner = "SELECT COUNT(*) as dinner FROM `Order` WHERE Date = '$today' AND Type = 2";
-        $result_dinner = $conn->query($sql_dinner);
-        $row_dinner = $result_dinner->fetch_assoc();
-        $dinnerOrders = $row_dinner['dinner'];
+            // Query to get dinner orders for today
+            $sql_dinner = "SELECT COUNT(*) as dinner FROM `Order` WHERE Date = '$today' AND Type = 2";
+            $result_dinner = $conn->query($sql_dinner);
+            $row_dinner = $result_dinner->fetch_assoc();
+            $dinnerOrders = $row_dinner['dinner'];
 
-        $conn->close();
-        ?>
+            $conn->close();
+            ?>
 
-        <p class="text-lg">Total Orders Today: <span class="font-semibold"><?php echo $totalOrders; ?></span></p>
-        <p class="text-lg mt-4">Lunch Orders: <span class="font-semibold"><?php echo $lunchOrders; ?></span></p>
-        <p class="text-lg mt-4">Dinner Orders: <span class="font-semibold"><?php echo $dinnerOrders; ?></span></p>
-    </div>
+            <p class="text-lg">Total Orders Today: <span class="font-semibold"><?php echo $totalOrders; ?></span></p>
+            <p class="text-lg mt-4">Lunch Orders: <span class="font-semibold"><?php echo $lunchOrders; ?></span></p>
+            <p class="text-lg mt-4">Dinner Orders: <span class="font-semibold"><?php echo $dinnerOrders; ?></span></p>
+        </div>
 
 <!-- Today's Ongoing Meal -->
 <div class="bg-white p-6 rounded-lg shadow-md">
@@ -178,7 +188,7 @@ if (isset($_POST['logout'])) {
     // Fetch ongoing dinner menu items
     $sql_dinner = "SELECT GROUP_CONCAT(Food_item SEPARATOR ', ') as dinner_items 
                    FROM menu_food 
-                   WHERE Menu_id = (SELECT Dinner_Menu_Id FROM ongoing_meal WHERE date = '$today')";
+                   WHERE Menu_id = (SELECT Dinner_Menu_Id FROM available_menu WHERE date = '$today')";
     $result_dinner = $conn->query($sql_dinner);
 
     if ($result_dinner->num_rows > 0) {
@@ -188,21 +198,22 @@ if (isset($_POST['logout'])) {
         echo "<p class='text-lg'>Dinner: No ongoing meal</p>";
     }
 
-    $sql_dinner_price = "SELECT Price
-                        FROM menu 
-                        WHERE Menu_id = (SELECT Dinner_Menu_Id FROM ongoing_meal WHERE date = '$today')";
+    $sql_dinner_price = "SELECT Dinner_price
+                        FROM available_menu 
+                        WHERE date = '$today' ";
     $result_sql_dinner_price = $conn->query($sql_dinner_price);
     
     if ($result_sql_dinner_price -> num_rows > 0) {
         $row_dinner_price = $result_sql_dinner_price->fetch_assoc();
-        echo "<p class='text-lg'>Price : {$row_dinner_price['Price']}</p>";
+        echo "<p class='text-lg'>Price : {$row_dinner_price['Dinner_price']}</p>";
     } else {
         echo "<p class='text-lg'>Price : </p>";
     }
+    //header("refresh: 0");
     // Fetch ongoing lunch menu items
     $sql_lunch = "SELECT GROUP_CONCAT(Food_item SEPARATOR ', ') as lunch_items 
                   FROM menu_food 
-                  WHERE Menu_id = (SELECT Lunch_Menu_Id FROM ongoing_meal WHERE date = '$today')";
+                  WHERE Menu_id = (SELECT Lunch_Menu_Id FROM available_menu WHERE date = '$today')";
     $result_lunch = $conn->query($sql_lunch);
 
     if ($result_lunch->num_rows > 0) {
@@ -212,14 +223,14 @@ if (isset($_POST['logout'])) {
         echo "<p class='text-lg mt-4'>Lunch: No ongoing meal</p>";
     }
 
-    $sql_lunch_price = "SELECT Price
-                        FROM menu 
-                        WHERE Menu_id = (SELECT Lunch_Menu_Id FROM ongoing_meal WHERE date = '$today')";
+    $sql_lunch_price = "SELECT Lunch_price
+                        FROM available_menu 
+                        WHERE date = '$today' ";
     $result_sql_lunch_price = $conn->query($sql_lunch_price);
     
     if ($result_sql_lunch_price -> num_rows > 0) {
         $row_lunch_price = $result_sql_lunch_price->fetch_assoc();
-        echo "<p class='text-lg'>Price : {$row_lunch_price['Price']}</p>";
+        echo "<p class='text-lg'>Price : {$row_lunch_price['Lunch_price']}</p>";
     } else {
         echo "<p class='text-lg'>Price : </p>";
     }

@@ -29,7 +29,7 @@
                 <a href="add_package.php" class="block">Add Package</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="delete.php" class="block">Delete Package</a>
+                <a href="delete_package.php" class="block">Delete Package</a>
             </li>
         </ul>
     </div>

@@ -174,7 +174,6 @@
             } else {
                 echo "<p>No manager information available.</p>";
             }
-
             $conn->close();
             ?>
         </div>

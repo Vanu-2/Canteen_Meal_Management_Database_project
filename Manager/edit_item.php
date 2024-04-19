@@ -5,18 +5,20 @@ if (isset($_POST['edit'])) {
     $menu_id = $_POST['menu_id'];
 
     // Fetch current food items and price for the selected menu item
-    $sql = "SELECT Menu.Menu_id, GROUP_CONCAT(Menu_food.Food_item SEPARATOR ', ') AS FoodItems, Menu.Price 
+    $sql = "SELECT Menu.Menu_id, Menu_food.Food_item, Menu.Price 
             FROM Menu 
             LEFT JOIN Menu_food ON Menu.Menu_id = Menu_food.Menu_id 
-            WHERE Menu.Menu_id = $menu_id 
-            GROUP BY Menu.Menu_id";
+            WHERE Menu.Menu_id = $menu_id";
     
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $current_food_items = $row['FoodItems'];
-        $current_price = $row['Price'];
+        $food_items = [];
+        while ($row = $result->fetch_assoc()) {
+            $food_items[] = $row['Food_item'];
+            $current_price = $row['Price'];
+        }
+        $current_food_items = implode(', ', $food_items);
     } else {
         echo "Error fetching menu item.";
         exit();
@@ -58,30 +60,37 @@ if (isset($_POST['update'])) {
 $conn->close();
 ?>
 
-<!-- <!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DMeal - Edit Food Item</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head> -->
 <?php 
-    include'index.php';
-    ?>
+include 'index.php';
+?>
+
 <body class="bg-green-100 font-sans">
 
-    <div class="ml-64 p-8">
+<div class="ml-64 p-8">
         <h1 class="text-3xl font-bold mb-8">Edit Food Item</h1>
         <div style="background-color: #4c9173;" class="p-6 rounded-lg shadow-md">
             <form action="edit_item.php" method="post">
                 <input type="hidden" name="menu_id" value="<?php echo $menu_id; ?>">
-                <div class="mb-4">
-                    <label for="food_items" class="block text-white mb-2">Food Items:</label>
-                    <input type="text" name="food_items[]" value="<?php echo $current_food_items; ?>" class="border border-gray-300 p-2 w-full rounded mb-2" placeholder="Enter food items" required>
+                
+                <!-- Food Items -->
+                <div id="foodItemsContainer">
+                    <?php 
+                    $food_items_array = explode(', ', $current_food_items);
+                    foreach ($food_items_array as $food_item) {
+                        echo '<div class="mb-4">';
+                        echo '<label class="block text-white mb-2">Food Item:</label>';
+                        echo '<input type="text" name="food_items[]" value="' . $food_item . '" class="border border-gray-300 p-2 w-full rounded mb-2" required>';
+                        echo '<button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteBtn">Delete</button>';
+                        echo '</div>';
+                    }
+                    ?>
                 </div>
+                
+                <!-- Add More Button -->
+                <button type="button" id="addMoreBtn" class="bg-green-500 text-white px-4 py-2 rounded mb-4">Add More</button>
+                
+                <!-- Price -->
                 <div class="mb-4">
                     <label for="price" class="block text-white mb-2">Price:</label>
                     <input type="number" name="price" value="<?php echo $current_price; ?>" class="border border-gray-300 p-2 w-full rounded mb-2" placeholder="Enter price" required>
@@ -96,6 +105,52 @@ $conn->close();
             <p>&copy; 2024 Dining Meal Management System</p>
         </div>
     </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMoreBtn = document.getElementById('addMoreBtn');
+        const foodItemsContainer = document.getElementById('foodItemsContainer');
+
+        addMoreBtn.addEventListener('click', function() {
+            const newDiv = document.createElement('div');
+            newDiv.className = 'mb-4';
+
+            const label = document.createElement('label');
+            label.className = 'block text-white mb-2';
+            label.textContent = 'Food Item:';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'food_items[]';
+            input.className = 'border border-gray-300 p-2 w-full rounded mb-2';
+            input.required = true;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'bg-red-500 text-white px-2 py-1 rounded deleteBtn';
+            deleteBtn.textContent = 'Delete';
+
+            newDiv.appendChild(label);
+            newDiv.appendChild(input);
+            newDiv.appendChild(deleteBtn);
+
+            foodItemsContainer.appendChild(newDiv);
+
+            deleteBtn.addEventListener('click', function() {
+                foodItemsContainer.removeChild(newDiv);
+            });
+        });
+
+        // Event delegation for dynamic delete buttons
+        foodItemsContainer.addEventListener('click', function(e) {
+            if (e.target && e.target.className.includes('deleteBtn')) {
+                const parentDiv = e.target.parentElement;
+                foodItemsContainer.removeChild(parentDiv);
+            }
+        });
+    });
+</script>
+
 
 </body>
 

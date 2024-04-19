@@ -42,6 +42,7 @@ if (isset($_POST['login'])) {
                 <select id="userType" name="userType" class="border border-gray-300 p-2 w-full rounded">
                     <option value="manager">Manager</option>
                     <option value="student">Student</option>
+                    <option value="admin">Admin</option>
                 </select>
             </div>
             <div class="mb-4">
