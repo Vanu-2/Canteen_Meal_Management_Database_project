@@ -2,23 +2,12 @@
 session_start();
 include 'db.php';
 
-if (isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $userType = $_POST['userType'];
-
-    $sql = "SELECT * FROM manager WHERE Manager_name ='$username' AND Password='$password' ";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows == 1) {
-        $_SESSION['loggedIn'] = true;
-        $_SESSION['username'] = $username;
-        $_SESSION['userType'] = $userType;
-        header('Location: Manager/dashboard.php');
-    } else {
-        echo "<script>alert('Invalid credentials');</script>";
-    }
+// Check if user is logged in, if not redirect to login page
+if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
+    header('Location: ../login_form.php');
+    exit;
 }
+
 ?>
 
 <!DOCTYPE html>

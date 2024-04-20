@@ -2,22 +2,14 @@
 session_start();
 include 'db.php';
 
-if (isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $userType = $_POST['userType'];
-
-    $sql = "SELECT * FROM manager WHERE Manager_name ='$username' AND Password='$password' ";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows == 1) {
-        $_SESSION['loggedIn'] = true;
-        $_SESSION['username'] = $username;
-        $_SESSION['userType'] = $userType;
-        header('Location: Manager/dashboard.php');
-    } else {
-        echo "<script>alert('Invalid credentials');</script>";
-    }
+// Check if user is logged in, if not redirect to login page
+if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
+    header('Location: ../login_form.php');
+    exit;
+}
+else
+{
+    $mid = (int)$_SESSION['userid'];
 }
 ?>
 
@@ -107,11 +99,10 @@ if (isset($_POST['login'])) {
         $foodItems = $_POST['foodItems'];
         $price = (int)$_POST['price'];
         $menu_id = (int)$_POST['MenuId'];
-    
         // Debugging: Check the data type and contents of $foodItems
     
         // Insert into Menu table
-        $sql = "INSERT INTO Menu (Menu_id, Price, Manager_id) VALUES ($menu_id, $price, 1)"; // Replace 1 with actual Manager_Id
+        $sql = "INSERT INTO Menu (Menu_id, Price, Manager_id) VALUES ($menu_id, $price, $mid);"; 
         if ($conn->query($sql) === TRUE) {
             $last_id = $conn->insert_id;
     

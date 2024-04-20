@@ -58,7 +58,7 @@ if (isset($_POST['logout'])) {
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold">Manager Dashboard</h1>
             <div class="flex items-center space-x-4">
-                <span class =  "font-semibold text-black"> Welcome, Manager - <?php echo $_SESSION['username']; ?></span>
+                <span class =  "font-semibold text-black"> Logged In As Manager. </span>
                 <form action="dashboard.php" method="post">
                     <button type="submit" name="logout" class="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
                 </form>

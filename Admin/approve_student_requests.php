@@ -1,3 +1,14 @@
+<?php
+session_start();
+include 'db.php';
+
+// Check if user is logged in, if not redirect to login page
+if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'admin') {
+    header('Location: ../login_form.php');
+    exit;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
