@@ -70,10 +70,11 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
                     <?php
                     include 'db.php';
 
-                    $sql = "SELECT Menu.Menu_id, GROUP_CONCAT(Menu_food.Food_item SEPARATOR ', ') AS FoodItems, Menu.Price 
-                            FROM Menu 
-                            LEFT JOIN Menu_food ON Menu.Menu_id = Menu_food.Menu_id 
-                            GROUP BY Menu.Menu_id";
+                    $sql = "SELECT menu.Menu_id, GROUP_CONCAT(menu_food.Food_item SEPARATOR ', ') as FoodItems, menu.Price 
+                            FROM menu, menu_food
+                            WHERE menu.Menu_id = menu_food.Menu_id
+                            GROUP BY menu.Menu_id;
+                            ";
                     
                     $result = $conn->query($sql);
 
@@ -115,5 +116,4 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
     </footer>
 
 </body>
-
 </html>
