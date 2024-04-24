@@ -43,7 +43,7 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'admin') {
                 <a href="modify_manager_info.php" class="block">Modify Manager Information</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="reports.php" class="block">Reports</a>
+                <a href="reports.php" class="block">Add New Admin</a>
             </li>
         </ul>
     </div>
@@ -70,7 +70,7 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'admin') {
                     <tbody class="text-gray-600 text-sm divide-y divide-gray-300">
                         <?php
                         include 'db.php';
-                        $sql_managers = "SELECT * FROM manager WHERE manager.Type = '0'";
+                        $sql_managers = "SELECT * FROM manager WHERE manager.Type = 'requested'";
                         $result_managers = $conn->query($sql_managers);
 
                         if ($result_managers->num_rows > 0) {

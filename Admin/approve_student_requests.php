@@ -44,7 +44,7 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'admin') {
                 <a href="modify_manager_info.php" class="block">Modify Manager Information</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="reports.php" class="block">Reports</a>
+                <a href="reports.php" class="block">Add New Admin</a>
             </li>
         </ul>
     </div>
@@ -71,7 +71,7 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'admin') {
                     <tbody class="text-gray-600 text-sm divide-y divide-gray-300">
                         <?php
                         include 'db.php';
-                        $sql_students = "SELECT * FROM student WHERE student.type = 0";
+                        $sql_students = "SELECT * FROM student WHERE student.type = 'requested'";
                         $result_students = $conn->query($sql_students);
 
                         if ($result_students->num_rows > 0) {

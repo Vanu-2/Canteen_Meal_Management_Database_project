@@ -14,6 +14,9 @@ if (isset($_POST['logout'])) {
     header('Location: ../login_form.php');
     exit;
 }
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +50,7 @@ if (isset($_POST['logout'])) {
                 <a href="add_package.php" class="block">Add Package</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="delete_package.php" class="block">Delete Package</a>
+                <a href="delete_package.php" class="block">Retrive Deleted Packages</a>
             </li>
         </ul>
     </div>
@@ -65,8 +68,8 @@ if (isset($_POST['logout'])) {
             </div>
         </div>
         <!-- Update Dinner and Lunch Items -->
-        <div class="grid grid-cols-2 gap-8 mb-8">
-
+        <div class="grid grid-cols-3 gap-8 mb-8">
+            
             <!-- Update Dinner Items Form -->
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold mb-4">Update Dinner Items</h2>
@@ -77,7 +80,7 @@ if (isset($_POST['logout'])) {
                             <?php
                             include 'db.php';
 
-                            $sql = "SELECT Menu_id, Price FROM Menu";
+                            $sql = "SELECT Menu_id, Price FROM Menu Where  menu.isDeleted = 0";
                             $result = $conn->query($sql);
 
                             if ($result->num_rows > 0) {
@@ -108,7 +111,7 @@ if (isset($_POST['logout'])) {
                             <?php
                             include 'db.php';
 
-                            $sql = "SELECT Menu_id, Price FROM Menu";
+                            $sql = "SELECT Menu_id, Price FROM Menu WHERE  menu.isDeleted = 0";
                             $result = $conn->query($sql);
 
                             if ($result->num_rows > 0) {
@@ -129,7 +132,16 @@ if (isset($_POST['logout'])) {
                     </div>
 
                 </div>
-
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Insert Daily Cost</h2>
+                
+                    <div class="mb-4">
+                        <label for="dailyCost" class="block text-lg font-semibold mb-2">Daily Cost:</label>
+                        <input type="number" id="dailyCost" name="dailyCost" class="border border-gray-300 p-2 w-full rounded">
+                    </div>
+                    <button type="submit" name="insertDailyCost" class="bg-green-500 text-white px-4 py-2 rounded">Insert</button>
+                
+                </div>
                 <!-- Single Update Button -->
                 <div >
                     <button type="submit" name="updateOngoingMeals" class="bg-blue-500 text-white px-4 py-2 rounded">Update Meals</button>
@@ -156,13 +168,13 @@ if (isset($_POST['logout'])) {
             $totalOrders = $row_total['total'];
 
             // Query to get lunch orders for today
-            $sql_lunch = "SELECT COUNT(*) as lunch FROM `Order` WHERE Date = '$today' AND Type = 3";
+            $sql_lunch = "SELECT COUNT(*) as lunch FROM `Order` WHERE Date = '$today' AND Type = 'lunch'";
             $result_lunch = $conn->query($sql_lunch);
             $row_lunch = $result_lunch->fetch_assoc();
             $lunchOrders = $row_lunch['lunch'];
 
             // Query to get dinner orders for today
-            $sql_dinner = "SELECT COUNT(*) as dinner FROM `Order` WHERE Date = '$today' AND Type = 2";
+            $sql_dinner = "SELECT COUNT(*) as dinner FROM `Order` WHERE Date = '$today' AND Type = 'dinner'";
             $result_dinner = $conn->query($sql_dinner);
             $row_dinner = $result_dinner->fetch_assoc();
             $dinnerOrders = $row_dinner['dinner'];

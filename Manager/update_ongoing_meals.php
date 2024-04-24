@@ -1,4 +1,24 @@
 <?php
+session_start();
+include 'db.php';
+
+// Check if user is logged in, if not redirect to login page
+if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
+    header('Location: ../login_form.php');
+    exit;
+}
+
+// Logout logic
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header('Location: ../login_form.php');
+    exit;
+}
+
+
+
+?>
+<?php
 include 'db.php';
 
 if (isset($_POST['updateOngoingMeals'])) {
@@ -40,6 +60,38 @@ if (isset($_POST['updateOngoingMeals'])) {
     }
 
     header('Location: dashboard.php');
+}
+if (isset($_POST['insertDailyCost'])) {
+    $dailyCost = $_POST['dailyCost'];
+
+    // Insert the daily cost into the database
+    if (isset($_POST['insertDailyCost'])) {
+        $dailyCost = $_POST['dailyCost'];
+        $managerId = $_SESSION['userid']; // Assuming userId is the column in session for manager's ID
+    
+        // Get today's date
+        $today = date('Y-m-d');
+
+        $checkSql = "SELECT * FROM daily_cost WHERE Date = '$today' AND Manager_id = '$managerId'";
+        $checkResult = $conn->query($checkSql);
+    
+        if ($checkResult->num_rows > 0) {
+            // If record exists, delete it
+            $deleteSql = "DELETE FROM daily_cost WHERE Date = '$today' AND Manager_id = '$managerId'";
+            if ($conn->query($deleteSql) !== TRUE) {
+                echo "Error deleting previous daily cost: " . $conn->error;
+                exit();
+            }
+        }
+        // Insert the daily cost into the database
+        $sql = "INSERT INTO daily_cost (Date, Cost, Manager_id) VALUES ('$today', '$dailyCost', '$managerId')";
+        if ($conn->query($sql) !== TRUE) {
+            echo "Error inserting daily cost: " . $conn->error;
+            exit();
+        }
+    
+        header('Location: dashboard.php');
+    }
 }
 
 $conn->close();

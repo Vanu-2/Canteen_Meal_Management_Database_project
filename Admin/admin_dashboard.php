@@ -50,7 +50,7 @@ if (isset($_POST['logout'])) {
                 <a href="modify_manager_info.php" class="block">Modify Manager Information</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="reports.php" class="block">Reports</a>
+                <a href="reports.php" class="block">Add New Admin</a>
             </li>
         </ul>
     </div>
@@ -87,13 +87,13 @@ if (isset($_POST['logout'])) {
             $totalOrders = $row_total['total'];
 
             // Query to get lunch orders for today
-            $sql_lunch = "SELECT COUNT(*) as lunch FROM `Order` WHERE Date = '$today' AND Type = 3";
+            $sql_lunch = "SELECT COUNT(*) as lunch FROM `Order` WHERE Date = '$today' AND Type = 'lunch'";
             $result_lunch = $conn->query($sql_lunch);
             $row_lunch = $result_lunch->fetch_assoc();
             $lunchOrders = $row_lunch['lunch'];
 
             // Query to get dinner orders for today
-            $sql_dinner = "SELECT COUNT(*) as dinner FROM `Order` WHERE Date = '$today' AND Type = 2";
+            $sql_dinner = "SELECT COUNT(*) as dinner FROM `Order` WHERE Date = '$today' AND Type = 'dinner'";
             $result_dinner = $conn->query($sql_dinner);
             $row_dinner = $result_dinner->fetch_assoc();
             $dinnerOrders = $row_dinner['dinner'];
@@ -168,6 +168,32 @@ if (isset($_POST['logout'])) {
     $conn->close();
     ?>
 </div>
+<!-- Active Managers -->
+<div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <h2 class="text-2xl font-bold mb-4">Active Manager</h2>
+    
+    <?php
+    include 'db.php';
+
+    // Query to get active managers' info
+    $sql_active_managers = "SELECT Manager_id, Manager_name, Email, Mobile_No FROM manager WHERE Type = 'active'";
+    $result_active_managers = $conn->query($sql_active_managers);
+
+    if ($result_active_managers->num_rows > 0) {
+        while ($row = $result_active_managers->fetch_assoc()) {
+         echo "<p class='text-lg'><span class='font-semibold'>ID: </span>" . $row["Manager_id"] . "</p>"; 
+      echo "<p class='text-lg'><span class='font-semibold'>Name: </span>" . $row["Manager_name"] . "</p>"; 
+         echo "<p class='text-lg'><span class='font-semibold'>Email: </span>" . $row["Email"] . "</p>"; 
+        echo "<p class='text-lg'><span class='font-semibold'>Mobile: </span>" . $row["Mobile_No"] . "</p>";        
+        }
+    } else {
+        echo "<p class='text-lg'>No active managers found.</p>";
+    }
+
+    $conn->close();
+    ?>
+</div>
+
     </div>
     </div>
 

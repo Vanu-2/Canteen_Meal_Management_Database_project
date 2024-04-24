@@ -44,7 +44,7 @@ else
                 <a href="add_package.php" class="block">Add Package</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="delete_package.php" class="block">Delete Package</a>
+                <a href="delete_package.php" class="block">Retrive Deleted Packages</a>
             </li>
         </ul>
     </div>
@@ -117,6 +117,7 @@ else
     
             echo "<script>alert('Food package added successfully');</script>";
         } else {
+            echo "Try Changing Your Menu Id";
             echo "<script>alert('Error adding food package: " . $conn->error . "');</script>";
         }
         

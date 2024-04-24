@@ -8,6 +8,19 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
     exit;
 }
 
+if (isset($_POST['delete'])) {
+    $menu_id = $_POST['menu_id'];
+
+    // Set isDeleted = 1 for the menu
+    $sql = "UPDATE menu SET isDeleted = 1 WHERE Menu_id = $menu_id";
+    if ($conn->query($sql) !== TRUE) {
+        echo "Error updating menu: " . $conn->error;
+        exit();
+    }
+
+    header('Location: edit_package.php');
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +54,7 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
                 <a href="add_package.php" class="block">Add Package</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="delete_package.php" class="block">Delete Package</a>
+                <a href="delete_package.php" class="block">Retrive Deleted Packages</a>
             </li>
         </ul>
     </div>
@@ -51,18 +64,18 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
         <div style="background-color: #4c9173;" class="p-6 rounded-lg shadow-md">
             <table class="min-w-full leading-normal">
                 <thead>
-                    <tr style = "background-color : #694b7c;">
-                        <th class="px-5 py-3 border-b-2   text-left text-xs font-semibold text-white uppercase tracking-wider">
+                    <tr style="background-color : #694b7c;">
+                        <th class="px-5 py-3 border-b-2 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             Menu ID
                         </th>
-                        <th class="px-5 py-3 border-b-2  text-left text-xs font-semibold text-white uppercase tracking-wider">
+                        <th class="px-5 py-3 border-b-2 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             Food Items
                         </th>
-                        <th class="px-5 py-3 border-b-2  text-left text-xs font-semibold text-white uppercase tracking-wider">
+                        <th class="px-5 py-3 border-b-2 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             Price
                         </th>
-                        <th class="px-5 py-3 border-b-2  text-left text-xs font-semibold text-white uppercase tracking-wider">
-                            Edit
+                        <th class="px-5 py-3 border-b-2 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                            Actions
                         </th>
                     </tr>
                 </thead>
@@ -71,29 +84,33 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
                     include 'db.php';
 
                     $sql = "SELECT menu.Menu_id, GROUP_CONCAT(menu_food.Food_item SEPARATOR ', ') as FoodItems, menu.Price 
-                            FROM menu, menu_food
-                            WHERE menu.Menu_id = menu_food.Menu_id
-                            GROUP BY menu.Menu_id;
-                            ";
-                    
+                    FROM menu, menu_food
+                    WHERE menu.Menu_id = menu_food.Menu_id and menu.isDeleted = 0
+                    GROUP BY menu.Menu_id;
+                    ";
                     $result = $conn->query($sql);
+
 
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td style = 'background-color : #e2eff1;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
+                            echo "<td style='background-color : #e2eff1;' class='px-5 py-5 border-b border-gray-500 text-sm'>";
                             echo $row["Menu_id"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #dbef98;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
+                            echo "<td style='background-color : #dbef98;' class='px-5 py-5 border-b border-gray-500 text-sm'>";
                             echo $row["FoodItems"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #e5f1e3;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
+                            echo "<td style='background-color : #e5f1e3;' class='px-5 py-5 border-b border-gray-500 text-sm'>";
                             echo "৳ " . $row["Price"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #dbef98;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
-                            echo "<form action='edit_item.php' method='post'>";
+                            echo "<td style='background-color : #dbef98;' class='px-5 py-5 border-b border-gray-500 text-sm'>";
+                            echo "<form action='edit_item.php' method='post' class='inline'>";
                             echo "<input type='hidden' name='menu_id' value='" . $row["Menu_id"] . "'>";
-                            echo "<button type='submit' name='edit' class='bg-blue-500 text-white px-4 py-2 rounded'>Edit</button>";
+                            echo "<button type='submit' name='edit' class='bg-blue-500 text-white px-4 py-2 rounded mr-2'>Edit</button>";
+                            echo "</form>";
+                            echo "<form action='' method='post' class='inline'>";
+                            echo "<input type='hidden' name='menu_id' value='" . $row["Menu_id"] . "'>";
+                            echo "<button type='submit' name='delete' class='bg-red-500 text-white px-4 py-2 rounded'>Delete</button>";
                             echo "</form>";
                             echo "</td>";
                             echo "</tr>";

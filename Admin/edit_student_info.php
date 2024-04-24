@@ -22,7 +22,7 @@ if (isset($_POST['delete'])) {
 if (isset($_POST['block'])) {
     $student_id = (int)$_POST['student_id'];
 
-    $sql = "UPDATE student SET student.type = 3 WHERE Student_id = $student_id";
+    $sql = "UPDATE student SET student.type = 'inactive' WHERE Student_id = $student_id";
     if ($conn->query($sql) === TRUE) {
         echo "<script>alert('Student blocked successfully');</script>";
     } else {
@@ -103,7 +103,7 @@ $conn->close();
                 <a href="modify_manager_info.php" class="block">Modify Manager Information</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="reports.php" class="block">Reports</a>
+                <a href="reports.php" class="block">Add New Admin</a>
             </li>
         </ul>
     </div>

@@ -8,6 +8,19 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
     exit;
 }
 
+if (isset($_POST['retrieve'])) {
+    $menu_id = $_POST['menu_id'];
+
+    // Retrieve menu item by setting isDeleted to 0
+    $sql = "UPDATE menu SET isDeleted = 0 WHERE Menu_id = $menu_id";
+    if ($conn->query($sql) !== TRUE) {
+        echo "Error retrieving menu item: " . $conn->error;
+        exit();
+    }
+
+    header('Location: delete_package.php');
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -41,13 +54,13 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
                 <a href="add_package.php" class="block">Add Package</a>
             </li>
             <li class="px-5 py-3 hover:bg-green-300">
-                <a href="delete_package.php" class="block">Delete Package</a>
+                <a href="delete_package.php" class="block">Retrive Deleted Packages</a>
             </li>
         </ul>
     </div>
 
     <div class="ml-64 p-8">
-        <h1 class="text-3xl font-bold mb-8">Delete Food Package</h1>
+        <h1 class="text-3xl font-bold mb-8">Retrieve Food Package</h1>
         <div style="background-color: #4c9173;" class="p-6 rounded-lg shadow-md">
             <table class="min-w-full leading-normal">
                 <thead>
@@ -62,7 +75,7 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
                             Price
                         </th>
                         <th class="px-5 py-3 border-b-2  text-left text-xs font-semibold text-white uppercase tracking-wider">
-                            Delete
+                            Retrieve
                         </th>
                     </tr>
                 </thead>
@@ -71,28 +84,28 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
                     include 'db.php';
 
                     $sql = "SELECT menu.Menu_id, GROUP_CONCAT(menu_food.Food_item SEPARATOR ', ') as FoodItems, menu.Price 
-                    FROM menu, menu_food
-                    WHERE menu.Menu_id = menu_food.Menu_id
-                    GROUP BY menu.Menu_id;
-                    ";
+                    FROM menu 
+                    INNER JOIN menu_food ON menu.Menu_id = menu_food.Menu_id
+                    WHERE menu.isDeleted = 1
+                    GROUP BY menu.Menu_id;";
                     $result = $conn->query($sql);
 
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td style = 'background-color : #e2eff1;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
+                            echo "<td style='background-color: #e2eff1;' class='px-5 py-5 border-b border-gray-500 text-sm'>";
                             echo $row["Menu_id"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #dbef98;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
+                            echo "<td style='background-color: #dbef98;' class='px-5 py-5 border-b border-gray-500 text-sm'>";
                             echo $row["FoodItems"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #e5f1e3;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
+                            echo "<td style='background-color: #e5f1e3;' class='px-5 py-5 border-b border-gray-500 text-sm'>";
                             echo "৳ " . $row["Price"];
                             echo "</td>";
-                            echo "<td style = 'background-color : #dbef98;' class='px-5 py-5 border-b border-gray-500  text-sm'>";
-                            echo "<form action='delete_item.php' method='post'>";
+                            echo "<td style='background-color: #dbef98;' class='px-5 py-5 border-b border-gray-500 text-sm'>";
+                            echo "<form action='delete_package.php' method='post'>";
                             echo "<input type='hidden' name='menu_id' value='" . $row["Menu_id"] . "'>";
-                            echo "<button type='submit' name='delete' class='bg-red-500 text-white px-4 py-2 rounded'>Delete</button>";
+                            echo "<button type='submit' name='retrieve' class='bg-blue-500 text-white px-4 py-2 rounded'>Retrieve</button>";
                             echo "</form>";
                             echo "</td>";
                             echo "</tr>";
