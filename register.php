@@ -13,7 +13,8 @@ if(isset($_POST['register'])){
     {
         try
         {
-            $sql = "INSERT INTO student (Student_id, Student_name, Email, Password, Mobile_No) VALUES ('$id', '$name', '$email', '$password', '$mobile')";
+            $tp = 'requested';
+            $sql = "INSERT INTO student (Student_id, Student_name, Email, Password, Mobile_No, Type) VALUES ('$id', '$name', '$email', '$password', '$mobile', '$tp')";
         }
         catch(Exception $e) {
             echo "<h1 align = center> Something Went Wrong <br> </h1>";
@@ -29,7 +30,8 @@ if(isset($_POST['register'])){
     {
         try
         {
-            $sql = "INSERT INTO manager (Manager_id, Manager_name, Email, Password, Mobile_No) VALUES ('$id', '$name', '$email', '$password', '$mobile')";
+            $t = 'requested';
+            $sql = "INSERT INTO manager (Manager_id, Manager_name, Email, Password, Mobile_No, Type) VALUES ('$id', '$name', '$email', '$password', '$mobile', '$t')";
         }
         catch(Exception $e) {
             echo "<h1 align = center> Something Went Wrong <br> </h1>";

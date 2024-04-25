@@ -1,3 +1,48 @@
+<?php
+session_start();
+include 'db.php';
+
+// Check if user is logged in, if not redirect to login page
+if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'student') {
+    header('Location: ../login_form.php');
+    exit;
+}
+
+// Logout logic
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header('Location: ../login_form.php');
+    exit;
+}
+
+// Get today's date
+$today = date('Y-m-d');
+
+// Check if an order exists for each meal type today
+$sql_check_dinner = "SELECT * FROM `order` WHERE Student_id = '{$_SESSION['userid']}' AND Date = '$today' AND Type = 'dinner'";
+$result_check_dinner = $conn->query($sql_check_dinner);
+
+$sql_check_lunch = "SELECT * FROM `order` WHERE Student_id = '{$_SESSION['userid']}' AND Date = '$today' AND Type = 'lunch'";
+$result_check_lunch = $conn->query($sql_check_lunch);
+
+$sql_dinner = "SELECT GROUP_CONCAT(Food_item SEPARATOR ', ') as dinner_items, Dinner_price
+               FROM menu_food 
+               JOIN available_menu ON menu_food.Menu_id = available_menu.Dinner_Menu_Id
+               WHERE available_menu.date = '$today'";
+$result_dinner = $conn->query($sql_dinner);
+$row_dinner = $result_dinner->fetch_assoc();
+
+// Fetch ongoing lunch menu items and price
+$sql_lunch = "SELECT GROUP_CONCAT(Food_item SEPARATOR ', ') as lunch_items, Lunch_price
+              FROM menu_food 
+              JOIN available_menu ON menu_food.Menu_id = available_menu.Lunch_Menu_Id
+              WHERE available_menu.date = '$today'";
+$result_lunch = $conn->query($sql_lunch);
+$row_lunch = $result_lunch->fetch_assoc();
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,90 +82,33 @@
 
         <!-- Ongoing Meal Display -->
         <div class="grid grid-cols-2 gap-8 mb-8">
-            <!-- Ongoing Meal -->
+            <!-- Dinner Card -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold mb-4">Today's Ongoing Meals</h2>
+                <h2 class="text-2xl font-bold mb-4">Today's Ongoing Dinner</h2>
+                <p class='text-lg'>Items: <?php echo $row_dinner['dinner_items'] ?? 'No ongoing meal'; ?></p>
+                <p class='text-lg'>Price: <?php echo $row_dinner['Dinner_price'] ?? ''; ?></p>
+                
+                <!-- Dinner Order Form -->
+                <form action="dinner_payment.php" method="post">
+                    <input type="hidden" name="type" value="dinner">
+                    <button type="submit" <?php echo ($result_check_dinner->num_rows > 0) ? 'disabled' : ''; ?> class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Order & Pay</button>
+                </form>
+            </div>
 
-                <!-- Fetch and display ongoing dinner and lunch items from menu_food table -->
-                <?php
-    include 'db.php';
-
-    // Get today's date
-    $today = date('Y-m-d');
-
-    // Fetch ongoing dinner menu items
-    $sql_dinner = "SELECT GROUP_CONCAT(Food_item SEPARATOR ', ') as dinner_items 
-                   FROM menu_food 
-                   WHERE Menu_id = (SELECT Dinner_Menu_Id FROM available_menu WHERE date = '$today')";
-    $result_dinner = $conn->query($sql_dinner);
-
-    if ($result_dinner->num_rows > 0) {
-        $row_dinner = $result_dinner->fetch_assoc();
-        echo "<p class='text-lg'>Dinner: {$row_dinner['dinner_items']}</p>";
-    } else {
-        echo "<p class='text-lg'>Dinner: No ongoing meal</p>";
-    }
-
-    $sql_dinner_price = "SELECT Dinner_price
-                        FROM available_menu 
-                        WHERE date = '$today' ";
-    $result_sql_dinner_price = $conn->query($sql_dinner_price);
-    
-    if ($result_sql_dinner_price -> num_rows > 0) {
-        $row_dinner_price = $result_sql_dinner_price->fetch_assoc();
-        echo "<p class='text-lg'>Price : {$row_dinner_price['Dinner_price']}</p>";
-    } else {
-        echo "<p class='text-lg'>Price : </p>";
-    }
-    //header("refresh: 0");
-    // Fetch ongoing lunch menu items
-    $sql_lunch = "SELECT GROUP_CONCAT(Food_item SEPARATOR ', ') as lunch_items 
-                  FROM menu_food 
-                  WHERE Menu_id = (SELECT Lunch_Menu_Id FROM available_menu WHERE date = '$today')";
-    $result_lunch = $conn->query($sql_lunch);
-
-    if ($result_lunch->num_rows > 0) {
-        $row_lunch = $result_lunch->fetch_assoc();
-        echo "<p class='text-lg mt-4'>Lunch: {$row_lunch['lunch_items']}</p>";
-    } else {
-        echo "<p class='text-lg mt-4'>Lunch: No ongoing meal</p>";
-    }
-
-    $sql_lunch_price = "SELECT Lunch_price
-                        FROM available_menu 
-                        WHERE date = '$today' ";
-    $result_sql_lunch_price = $conn->query($sql_lunch_price);
-    
-    if ($result_sql_lunch_price -> num_rows > 0) {
-        $row_lunch_price = $result_sql_lunch_price->fetch_assoc();
-        echo "<p class='text-lg'>Price : {$row_lunch_price['Lunch_price']}</p>";
-    } else {
-        echo "<p class='text-lg'>Price : </p>";
-    }
-    $conn->close();
-    ?>
-
+            <!-- Lunch Card -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Today's Ongoing Lunch</h2>
+                <p class='text-lg'>Items: <?php echo $row_lunch['lunch_items'] ?? 'No ongoing meal'; ?></p>
+                <p class='text-lg'>Price: <?php echo $row_lunch['Lunch_price'] ?? ''; ?></p>
+                
+                <!-- Lunch Order Form -->
+                <form action="lunch_payment.php" method="post">
+                    <input type="hidden" name="type" value="lunch">
+                    <button type="submit" <?php echo ($result_check_lunch->num_rows > 0) ? 'disabled' : ''; ?> class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Order & Pay</button>
+                </form>
             </div>
         </div>
 
-        <!-- Order Button with Dropdown -->
-        <div class="relative mt-8">
-            <div>
-                <button type="button" class="inline-flex justify-center w-15 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="orderMenuButton" aria-expanded="true" aria-haspopup="true">
-                    Order
-                </button>
-            </div>
-            <!-- Dropdown Menu -->
-            <div class="ml-64 p-5">
-    <div class="origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden" id="orderDropdown">
-        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="orderMenuButton">
-            <a href="only_dinner.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 order-option" data-type="1" role="menuitem">1. Only Dinner</a>
-            <a href="only_lunch.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 order-option" data-type="2" role="menuitem">2. Only Lunch</a>
-            <a href="order_both.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 order-option" data-type="3" role="menuitem">3. Both Dinner and Lunch</a>
-        </div>
-    </div>
-</div>
-        </div>
     </div>
 
     <!-- Footer -->
@@ -130,26 +118,6 @@
         </div>
     </footer>
 
-    <!-- Script for Dropdown -->
-    <script>
-        const orderMenuButton = document.getElementById('orderMenuButton');
-        const orderDropdown = document.getElementById('orderDropdown');
-        const orderOptions = document.querySelectorAll('.order-option');
-
-        orderMenuButton.addEventListener('click', () => {
-            orderDropdown.classList.toggle('hidden');
-        });
-
-        orderOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-                const url = e.target.getAttribute('data-url');
-                if (url) {
-                    window.location.href = url;
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
-
