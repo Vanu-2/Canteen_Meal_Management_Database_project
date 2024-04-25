@@ -28,7 +28,7 @@ if ($resultCheckDateRange->num_rows > 0) {
     $isValidDateRange = true;
 } else {
     $isValidDateRange = false;
-    
+
     //echo "<script>alert('Selected date range is not valid for the manager.');</script>";
     // <div class="ml-64 p-8">
     //echo "<div class=' ml-64 p-8 bg-red-500 text-white rounded-md'>Selected date range is not valid for the manager.</div>";
@@ -151,7 +151,7 @@ if ($reportType === 'profit' && $isValidDateRange) {
                     </thead>
                     <tbody>
                         <?php 
-                        $sql = "SELECT `Date`, Order_id, Student_id, 'Type'
+                        $sql = "SELECT `Date`, Order_id, Student_id, Type
                                 FROM `order` 
                                 WHERE `Date` BETWEEN '$startDate' AND '$endDate'";
                         $result = $conn->query($sql);
@@ -164,7 +164,7 @@ if ($reportType === 'profit' && $isValidDateRange) {
                                 <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Date']; ?></td>
                                 <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Order_id']; ?></td>
                                 <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Student_id']; ?></td>
-                                <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Order_type']; ?></td>
+                                <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Type']; ?></td>
                             </tr>
                         <?php 
                                 $rowColor = !$rowColor; // Toggle row color
