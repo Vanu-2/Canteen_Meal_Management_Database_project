@@ -27,7 +27,7 @@ if (isset($_POST['login'])) {
         } else if ($userType == 'admin') {
             header('Location: Admin/admin_dashboard.php');
         } else if ($userType == 'student') {
-            header('Location: Student/dashboard.php');
+            header('Location: Student/index.php');
         }
     } else {
         echo "<script>alert('Invalid credentials');</script>";

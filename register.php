@@ -7,21 +7,40 @@ if(isset($_POST['register'])){
     $mobile = $_POST['mobile'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $userType = $_POST['userType'];
 
-
-    try
+    if($userType == 'student')
     {
-        $sql = "INSERT INTO student (Student_Id, Student_name, Email, Password, Mobile_No) VALUES ('$id', '$name', '$email', '$password', '$mobile')";
+        try
+        {
+            $sql = "INSERT INTO student (Student_id, Student_name, Email, Password, Mobile_No) VALUES ('$id', '$name', '$email', '$password', '$mobile')";
+        }
+        catch(Exception $e) {
+            echo "<h1 align = center> Something Went Wrong <br> </h1>";
+        }
+    
+        if ($conn->query($sql) === TRUE) {
+            header('Location: login_form.php');
+        } else {
+            echo "<h1 align = center > Something Went Wrong <br> </h1>";
+        }
     }
-    catch(Exception $e) {
-        echo "<h1 align = center> Something Went Wrong <br> </h1>";
+    else if($userType == 'manager')
+    {
+        try
+        {
+            $sql = "INSERT INTO manager (Manager_id, Manager_name, Email, Password, Mobile_No) VALUES ('$id', '$name', '$email', '$password', '$mobile')";
+        }
+        catch(Exception $e) {
+            echo "<h1 align = center> Something Went Wrong <br> </h1>";
+        }
+    
+        if ($conn->query($sql) === TRUE) {
+            header('Location: login_form.php');
+        } else {
+            echo "<h1 align = center > Something Went Wrong <br> </h1>";
+        }
     }
 
-    if ($conn->query($sql) === TRUE) {
-        echo "Registration successful <br>"; 
-        echo "<h1 align = center > Hello  $name <br> </h1>";
-    } else {
-        echo "<h1 align = center > Something Went Wrong <br> </h1>";
-    }
 }
 ?>
