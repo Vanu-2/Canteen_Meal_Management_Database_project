@@ -28,6 +28,7 @@ if ($resultCheckDateRange->num_rows > 0) {
     $isValidDateRange = true;
 } else {
     $isValidDateRange = false;
+    
     //echo "<script>alert('Selected date range is not valid for the manager.');</script>";
     // <div class="ml-64 p-8">
     //echo "<div class=' ml-64 p-8 bg-red-500 text-white rounded-md'>Selected date range is not valid for the manager.</div>";
