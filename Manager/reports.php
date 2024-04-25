@@ -14,7 +14,7 @@ $reportType = $_POST['reportType'] ?? 'profit';
 
 $profit = 0;
 $reportData = [];
-$managerId = $_SESSION['managerId']; // Assuming managerId is stored in the session
+$managerId = $_SESSION['userid']; // Assuming managerId is stored in the session
 $isValidDateRange = false;
 
 $sqlCheckDateRange = "SELECT * FROM manager_valid_time 
@@ -28,10 +28,14 @@ if ($resultCheckDateRange->num_rows > 0) {
     $isValidDateRange = true;
 } else {
     $isValidDateRange = false;
-    echo "<div class='bg-red-500 text-white p-4 mb-4 rounded-md'>Selected date range is not valid for the manager.</div>";
+    //echo "<script>alert('Selected date range is not valid for the manager.');</script>";
+    // <div class="ml-64 p-8">
+    //echo "<div class=' ml-64 p-8 bg-red-500 text-white rounded-md'>Selected date range is not valid for the manager.</div>";
+    // sleep(1);
+    // header('Location: reports.php');
 }
 
-if ($reportType === 'profit' || $reportType === 'totalOrders') {
+if (($reportType === 'profit' || $reportType === 'totalOrders')&& $isValidDateRange) {
     $sql = "SELECT `order`.Date, SUM(payment.Value) AS totalValue
             FROM `order`
             LEFT JOIN payment ON `order`.Order_id = payment.Order_id
@@ -44,7 +48,7 @@ if ($reportType === 'profit' || $reportType === 'totalOrders') {
     }
 }
 
-if ($reportType === 'profit') {
+if ($reportType === 'profit' && $isValidDateRange) {
     $sql = "SELECT Date, SUM(Cost) as totalCost
             FROM daily_cost
             WHERE Date BETWEEN '$startDate' AND '$endDate'
@@ -73,7 +77,7 @@ if ($reportType === 'profit') {
 </head>
 
 <body class="bg-green-100 font-sans">
-<div style="background-color: #4c9173;" class="text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
+    <div style="background-color: #4c9173;" class="text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
         <div class="px-11 py-1 w-45 h-45">
             <img src="D Meal (Logo) (2).png" alt="Image" class="w-full h-full object-contain" />
         </div>

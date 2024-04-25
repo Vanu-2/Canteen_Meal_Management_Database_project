@@ -9,7 +9,7 @@ if (isset($_POST['login'])) {
     $sql = "";
     
     if ($userType == 'manager') {
-        $sql = "SELECT * FROM manager WHERE Manager_id = $userId AND Password='$password' AND manager.Type = 1";
+        $sql = "SELECT * FROM manager WHERE Manager_id = $userId AND Password='$password' AND manager.Type = 'active'";
     } elseif ($userType == 'admin') {
         $sql = "SELECT * FROM administrator WHERE Admin_id ='$userId' AND Password='$password' AND isActive = 1";
     } elseif ($userType == 'student') {
