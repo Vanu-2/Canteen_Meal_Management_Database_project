@@ -97,7 +97,7 @@ if (isset($_POST['logout'])) {
             $result_dinner = $conn->query($sql_dinner);
             $row_dinner = $result_dinner->fetch_assoc();
             $dinnerOrders = $row_dinner['dinner'];
-
+            // hi
             $conn->close();
             ?>
 

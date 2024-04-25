@@ -7,6 +7,7 @@ if (!isset($_SESSION['loggedIn']) || $_SESSION['userType'] !== 'manager') {
     header('Location: ../login_form.php');
     exit;
 }
+ 
 
 // Logout logic
 if (isset($_POST['logout'])) {
