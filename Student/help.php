@@ -16,7 +16,7 @@
             <img src="D Meal (Logo) (2).png" alt="Image" class="w-full h-full object-contain" />
         </div>
         <ul id="sidebarMenu" class="mt-8">
-            <li class="px-5 py-3 hover:bg-green-300">
+        <li class="px-5 py-3 hover:bg-green-300">
                 <a href="index.php" class="block">Profile</a>
 
                 
@@ -32,7 +32,7 @@
                 <a href="help.php" class="block">Help</a>
             </li>
             
-            <li class="px-5 py-3 hover:bg-green-600">
+            <li class="px-5 py-3 hover:bg-green-300">
                 <a href="history.php" class="block">Order History</a>
             </li>
             

@@ -195,9 +195,9 @@ if ($reportType === 'profit' && $isValidDateRange) {
                             <th class="px-5 py-3 border-b-2 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                 Profit
                             </th>
-                            <th class="px-5 py-3 border-b-2 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                            <!-- <th class="px-5 py-3 border-b-2 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                 Action
-                            </th>
+                            </th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -210,22 +210,20 @@ if ($reportType === 'profit' && $isValidDateRange) {
                                 <td class="px-5 py-5 border-b border-gray-500 text-sm <?php echo ($data['totalValue'] ?? 0) > ($data['totalCost'] ?? 0) ? 'bg-green-200' : 'bg-red-200'; ?>"><?php echo $data['totalValue'] ?? 0; ?></td>
                                 <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $data['totalCost'] ?? 0; ?></td>
                                 <td class="px-5 py-5 border-b border-gray-500 text-sm <?php echo $profitForDate >= 0 ? 'bg-green-200' : 'bg-red-200'; ?>"><?php echo $profitForDate; ?></td>
-                                <td class="px-5 py-5 border-b border-gray-500 text-sm">
-                                    <a href="edit_cost.php?date=<?php echo $date; ?>" class="bg-blue-500 text-white px-4 py-2 rounded">Edit</a>
-                                </td>
+                                
                             </tr>
                         <?php endforeach; ?>
                         <tr class="bg-blue-100">
                             <td class="px-5 py-5 border-b border-gray-500 text-sm">Total Profit</td>
-                            <td class="px-5 py-5 border-b border-gray-500 text-sm" colspan="3"><?php echo $profit; ?></td>
+                            <td class="px-5 py-5 border-b border-gray-500 text-sm" colspan="2"><?php echo $profit; ?></td>
                             <td class="px-5 py-5 border-b border-gray-500 text-sm"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         <?php endif; ?>
-        <?php if ($reportType === 'dailyMeals'): ?>
-        <div style="background-color: #4c9173;" class="p-6 rounded-lg shadow-md mb-8">
+    <?php if ($reportType === 'dailyMeals'): ?>
+    <div style="background-color: #4c9173;" class="p-6 rounded-lg shadow-md mb-8">
         <h2 class="text-2xl font-semibold mb-4">Daily Meals Report</h2>
 
         <!-- Lunch Table -->
@@ -264,12 +262,16 @@ if ($reportType === 'profit' && $isValidDateRange) {
                         $rowColor = true; // Variable to track row color
                         while($row = $resultLunch->fetch_assoc()) {
                             $colorClass = $rowColor ? 'bg-gray-200' : 'bg-gray-100'; // Alternate row colors
+                            $dt = $row['Date'];
+                            $qr = "SELECT COUNT(*) as total FROM `order` WHERE Type = 'lunch' AND Date = '$dt'";
+                            $resultDinnercount = $conn->query($qr);
+                            $r = $resultDinnercount->fetch_assoc();
                     ?>
                         <tr class="<?php echo $colorClass; ?>">
                             <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Date']; ?></td>
                             <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Price']; ?></td>
                             <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Items']; ?></td>
-                            <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Total_orders']; ?></td>
+                            <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $r['total']; ?></td>
                         </tr>
                     <?php 
                             $rowColor = !$rowColor; // Toggle row color
@@ -304,26 +306,32 @@ if ($reportType === 'profit' && $isValidDateRange) {
                 </thead>
                 <tbody>
                     <?php 
-                    $sqlDinner = "SELECT am.`Date`, am.Dinner_price AS Price, 
-                                         GROUP_CONCAT( mf.Food_item) AS Items,
-                                         SUM(CASE WHEN o.Type = 'dinner' THEN 1 ELSE 0 END) AS Total_orders
-                                  FROM available_menu am
-                                  LEFT JOIN menu_food mf ON am.Dinner_Menu_Id = mf.Menu_id
-                                  LEFT JOIN `order` o ON am.`Date` = o.`Date` AND o.Type = 'dinner'
-                                  WHERE am.`Date` BETWEEN '$startDate' AND '$endDate'
-                                  GROUP BY am.`Date`";
+                    $sqlDinner = "SELECT am.`Date`, am.Lunch_price AS Price, 
+                               GROUP_CONCAT(DISTINCT mf.Food_item) AS Items,
+                               SUM(CASE WHEN o.Type = 'dinner' THEN 1 ELSE 0 END) AS Total_orders
+                               FROM available_menu am
+                               LEFT JOIN menu_food mf ON am.Dinner_Menu_Id = mf.Menu_id
+                               LEFT JOIN `order` o ON am.`Date` = o.`Date` AND o.Type = 'dinner'
+                               WHERE am.`Date` BETWEEN '$startDate' AND '$endDate'
+                               GROUP BY am.`Date` , o.Type = 'dinner'
+                               ";
                     $resultDinner = $conn->query($sqlDinner);
 
                     if ($resultDinner->num_rows > 0) {
                         $rowColor = true; // Variable to track row color
                         while($row = $resultDinner->fetch_assoc()) {
                             $colorClass = $rowColor ? 'bg-gray-200' : 'bg-gray-100'; // Alternate row colors
+                            $dt = $row['Date'];
+                            $qr = "SELECT COUNT(*) as total FROM `order` WHERE Type = 'dinner' AND Date = '$dt'";
+                            $resultDinnercount = $conn->query($qr);
+                            $r = $resultDinnercount->fetch_assoc();
+                            //$count_order = $conn->query("Select Coun");
                     ?>
                         <tr class="<?php echo $colorClass; ?>">
                             <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Date']; ?></td>
                             <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Price']; ?></td>
                             <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Items']; ?></td>
-                            <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $row['Total_orders']; ?></td>
+                            <td class="px-5 py-5 border-b border-gray-500 text-sm"><?php echo $r['total']; ?></td>
                         </tr>
                     <?php 
                             $rowColor = !$rowColor; // Toggle row color

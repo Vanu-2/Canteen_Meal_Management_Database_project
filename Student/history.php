@@ -84,10 +84,7 @@ $conn->close();
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold">Profile Details</h1>
             <div class="flex items-center space-x-4">
-                <span class="font-semibold text-black">Logged In As <?php echo $_SESSION['userid']; ?>.</span>
-                <form action="index.php" method="post">
-                    <button type="submit" name="logout" class="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
-                </form>
+                
             </div>
         </div>
 

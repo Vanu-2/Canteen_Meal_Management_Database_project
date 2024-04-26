@@ -71,7 +71,7 @@ $conn->close();
             <li class="px-5 py-3 hover:bg-green-300">
                 <a href="help.php" class="block">Help</a>
             </li>
-            <li class="px-5 py-3 hover:bg-green-600">
+            <li class="px-5 py-3 hover:bg-green-00">
                 <a href="history.php" class="block">Order History</a>
             </li>
         </ul>

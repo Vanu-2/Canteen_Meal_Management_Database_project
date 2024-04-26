@@ -13,7 +13,7 @@ if (isset($_POST['login'])) {
     } elseif ($userType == 'admin') {
         $sql = "SELECT * FROM administrator WHERE Admin_id ='$userId' AND Password='$password' AND isActive = 1";
     } elseif ($userType == 'student') {
-        $sql = "SELECT * FROM student WHERE Student_id ='$userId' AND Password='$password'";
+        $sql = "SELECT * FROM student WHERE Student_id ='$userId' AND Password='$password' AND student.Type = 'active'";
     }
 
     $result = $conn->query($sql);
