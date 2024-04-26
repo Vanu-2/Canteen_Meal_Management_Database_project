@@ -29,7 +29,9 @@ if (isset($_POST['updateOngoingMeals'])) {
     $lunchMenuPrice = (int) $_POST['lunchMenuPrice'];
     // Get today's date
     $today = date('Y-m-d');
-
+    //echo $dinnerMenuId;
+    // echo $dinnerMenuId;
+    // echo $lunchMenuId;
     // Check if dinner menu price is 0, then get default price from menu table
     if ($dinnerMenuPrice === 0) {
         $result_dinner_price = $conn->query("SELECT Price FROM menu WHERE Menu_id = $dinnerMenuId");

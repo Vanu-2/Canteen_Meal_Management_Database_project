@@ -225,7 +225,7 @@ if ($reportType === 'profit' && $isValidDateRange) {
             </div>
         <?php endif; ?>
         <?php if ($reportType === 'dailyMeals'): ?>
-    <div style="background-color: #4c9173;" class="p-6 rounded-lg shadow-md mb-8">
+        <div style="background-color: #4c9173;" class="p-6 rounded-lg shadow-md mb-8">
         <h2 class="text-2xl font-semibold mb-4">Daily Meals Report</h2>
 
         <!-- Lunch Table -->

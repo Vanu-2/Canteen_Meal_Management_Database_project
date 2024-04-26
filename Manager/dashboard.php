@@ -14,9 +14,6 @@ if (isset($_POST['logout'])) {
     header('Location: ../login_form.php');
     exit;
 }
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -76,16 +73,21 @@ if (isset($_POST['logout'])) {
                 <form action="update_ongoing_meals.php" method="post">
                     <div class="mb-4">
                         <label for="dinnerMenuId" class="block text-lg font-semibold mb-2">Dinner Menu ID:</label>
-                        <select id="dinnerMenuId" name="dinnerMenuId" class="border border-gray-300 p-2 w-full rounded">
+                        <select id="dinnerMenuId" name="dinnerMenuId" class="border border-gray-300 p-2 w-full rounded" onchange="updatePriceAndItems()">
                             <?php
                             include 'db.php';
 
-                            $sql = "SELECT Menu_id, Price FROM Menu Where  menu.isDeleted = 0";
+                            $sql = "SELECT m.Menu_id, m.Price, GROUP_CONCAT(mf.Food_item SEPARATOR ', ') AS Menu_Items 
+                                    FROM Menu m 
+                                    LEFT JOIN menu_food mf ON m.Menu_id = mf.Menu_id 
+                                    WHERE m.isDeleted = 0 
+                                    GROUP BY m.Menu_id";
+                            
                             $result = $conn->query($sql);
 
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='" . $row["Menu_id"] . "' data-price='" . $row["Price"] . "'>" . $row["Menu_id"] . "</option>";
+                                    echo "<option value='" . $row["Menu_id"] . "' data-price='" . $row["Price"] . "' data-items='" . $row["Menu_Items"] . "'>" . $row["Menu_id"] . "</option>";
                                 }
                             } else {
                                 echo "<option value=''>No Menu IDs available</option>";
@@ -97,26 +99,36 @@ if (isset($_POST['logout'])) {
                     </div>
                     <div class="mb-4">
                         <label for="dinnerPrice" class="block text-lg font-semibold mb-2">Price:</label>
-                        <input type="number" id="dinnerMenuPrice" placeholder = "Selected Default Price. " name="dinnerMenuPrice" class="border border-gray-300 p-2 w-full rounded">
+                        <input type="number" id="dinnerMenuPrice" placeholder="Selected Default Price." name="dinnerMenuPrice" class="border border-gray-300 p-2 w-full rounded">
                     </div>
+                    <div class="mb-4">
+                        <label for="dinnerItems" class="block text-lg font-semibold mb-2">Menu Items:</label>
+                        <textarea id="dinnerMenuItems" name="dinnerMenuItems" rows="1" class="border border-gray-300 p-2 w-full rounded" readonly></textarea>
+                    </div>
+                <!-- </form> -->
+            </div>
 
-                </div>
-
-                <!-- Update Lunch Items Form -->
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h2 class="text-2xl font-bold mb-4">Update Lunch Items</h2>
+            <!-- Update Lunch Items Form -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Update Lunch Items</h2>
+                <!-- <form action="update_ongoing_meals.php" method="post"> -->
                     <div class="mb-4">
                         <label for="lunchMenuId" class="block text-lg font-semibold mb-2">Lunch Menu ID:</label>
-                        <select id="lunchMenuId" name="lunchMenuId" class="border border-gray-300 p-2 w-full rounded">
+                        <select id="lunchMenuId" name="lunchMenuId" class="border border-gray-300 p-2 w-full rounded" onchange="updateLunchPrice()">
                             <?php
                             include 'db.php';
 
-                            $sql = "SELECT Menu_id, Price FROM Menu WHERE  menu.isDeleted = 0";
+                            $sql = "SELECT m.Menu_id, m.Price, GROUP_CONCAT(mf.Food_item SEPARATOR ', ') AS Menu_Items 
+                                    FROM Menu m 
+                                    LEFT JOIN menu_food mf ON m.Menu_id = mf.Menu_id 
+                                    WHERE m.isDeleted = 0 
+                                    GROUP BY m.Menu_id";
+                            
                             $result = $conn->query($sql);
 
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='" . $row["Menu_id"] . "' data-price='" . $row["Price"] . "'>" . $row["Menu_id"] . "</option>";
+                                    echo "<option value='" . $row["Menu_id"] . "' data-price='" . $row["Price"] . "' data-items='" . $row["Menu_Items"] . "'>" . $row["Menu_id"] . "</option>";
                                 }
                             } else {
                                 echo "<option value=''>No Menu IDs available</option>";
@@ -127,10 +139,13 @@ if (isset($_POST['logout'])) {
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label for="dinnerPrice" class="block text-lg font-semibold mb-2">Price:</label>
-                        <input type="number" id="lunchMenuPrice" placeholder = "Selected Default Price. " name="lunchMenuPrice" class="border border-gray-300 p-2 w-full rounded">
+                        <label for="lunchPrice" class="block text-lg font-semibold mb-2">Price:</label>
+                        <input type="number" id="lunchMenuPrice" placeholder="Selected Default Price." name="lunchMenuPrice" class="border border-gray-300 p-2 w-full rounded">
                     </div>
-
+                    <div class="mb-4">
+                        <label for="lunchItems" class="block text-lg font-semibold mb-2">Menu Items:</label>
+                        <textarea id="lunchMenuItems" name="lunchMenuItems" rows="1" class="border border-gray-300 p-2 w-full rounded" readonly></textarea>
+                    </div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold mb-4">Insert Daily Cost</h2>
@@ -139,7 +154,7 @@ if (isset($_POST['logout'])) {
                         <label for="dailyCost" class="block text-lg font-semibold mb-2">Daily Cost:</label>
                         <input type="number" id="dailyCost" name="dailyCost" class="border border-gray-300 p-2 w-full rounded">
                     </div>
-                    <button type="submit" name="insertDailyCost" class="bg-green-500 text-white px-4 py-2 rounded">Insert</button>
+                    <button type="submit" name="insertDailyCost" class="bg-green-500 text-white px-4 py-2 rounded">Update</button>
                 
                 </div>
                 <!-- Single Update Button -->
@@ -257,7 +272,42 @@ if (isset($_POST['logout'])) {
             <p>&copy; 2024 Dining Meal Management System</p>
         </div>
     </footer>
+    <script>
+    function updatePriceAndItems() {
+        // Get the selected menu ID
+        const selectedMenuId = document.getElementById('dinnerMenuId').value;
 
+        // Get the corresponding price from the data-price attribute
+        const selectedPrice = document.getElementById('dinnerMenuId').options[document.getElementById('dinnerMenuId').selectedIndex].getAttribute('data-price');
+
+        // Get the corresponding menu items from the data-items attribute
+        const selectedItems = document.getElementById('dinnerMenuId').options[document.getElementById('dinnerMenuId').selectedIndex].getAttribute('data-items');
+
+        // Populate the price input field
+        document.getElementById('dinnerMenuPrice').value = selectedPrice;
+
+        // Populate the menu items textarea
+        document.getElementById('dinnerMenuItems').value = selectedItems;
+    }
+</script>
+<script>
+    function updateLunchPrice() {
+        // Get the selected menu ID
+        const selectedMenuId = document.getElementById('lunchMenuId').value;
+
+        // Get the corresponding price from the data-price attribute
+        const selectedPrice = document.getElementById('lunchMenuId').options[document.getElementById('lunchMenuId').selectedIndex].getAttribute('data-price');
+
+        // Get the corresponding menu items from the data-items attribute
+        const selectedItems = document.getElementById('lunchMenuId').options[document.getElementById('lunchMenuId').selectedIndex].getAttribute('data-items');
+
+        // Populate the price input field
+        document.getElementById('lunchMenuPrice').value = selectedPrice;
+
+        // Populate the menu items textarea
+        document.getElementById('lunchMenuItems').value = selectedItems;
+    }
+</script>
 </body>
 
 </html>
